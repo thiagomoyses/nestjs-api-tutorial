@@ -1,9 +1,11 @@
 import {Test}  from "@nestjs/testing";
 import { AppModule } from "../src/app.module";
 import { INestApplication, ValidationPipe } from "@nestjs/common";
+import { PrismaService } from "../src/prisma/prisma.service";
 
 describe('App end2end', () => {
-  let app: INestApplication
+  let app: INestApplication;
+  let prisma: PrismaService;
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
@@ -14,6 +16,9 @@ describe('App end2end', () => {
       whitelist: true
     }));
     await app.init();
+
+    prisma = app.get(PrismaService);
+    await prisma.cleanDb();
   });
 
   afterAll(() => {
